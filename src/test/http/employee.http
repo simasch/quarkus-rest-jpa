@@ -12,3 +12,23 @@ GET http://localhost:8080/employees
 Accept: application/json
 
 ###
+
+PUT http://localhost:8080/employees/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Peter"
+}
+
+###
+
+PUT http://localhost:8080/employees/111111
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Peter"
+}
+
+###

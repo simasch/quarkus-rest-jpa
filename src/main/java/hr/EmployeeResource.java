@@ -1,27 +1,36 @@
 package hr;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.transaction.Transactional;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/employees")
 public class EmployeeResource {
 
-    @Inject
-    private EmployeeRepository repository;
-
     @GET
     public List<Employee> getAll() {
-        return repository.findAll();
+        return Employee.listAll();
     }
 
     @POST
+    @Transactional
     public Employee post(Employee employee) {
-        return repository.save(employee);
+        employee.persistAndFlush();
+        return employee;
+    }
+
+    @PUT
+    @Path("{id}")
+    @Transactional
+    public Response put(@PathParam("id") Long id, Employee employee) {
+        Employee employeeFromDatabase = Employee.findById(id);
+        if (employeeFromDatabase == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            employeeFromDatabase.setName(employee.getName());
+            return Response.noContent().build();
+        }
     }
 
 }
